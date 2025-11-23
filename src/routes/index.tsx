@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { Circle, Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Squares from '@/components/Squares'
 import TextType from '@/components/TextType'
-import { Circle, Menu } from 'lucide-react'
 
 export const Route = createFileRoute('/')({
   component: App,
@@ -22,7 +22,7 @@ function App() {
           </nav>
 
           <Button className="hidden md:flex rounded-full px-6">Contact</Button>
-          <Menu className='md:hidden' />
+          <Menu className="md:hidden" />
         </header>
 
         <Squares
@@ -50,7 +50,9 @@ function App() {
         </div>
 
         <div className="w-[90%] md:w-1/4 absolute top-64 md:top-[60%] left-6 md:left-20 space-y-2">
-          <h1 className="uppercase  text-6xl md:text-8xl font-normal">I am Obede</h1>
+          <h1 className="uppercase  text-6xl md:text-8xl font-normal">
+            I am Obede
+          </h1>
           <div className="w-[60%] md:w-full lg:w-1/2 backdrop-blur-lg bg-white/5 border border-white/10 p-2 rounded-full flex items-center justify-center gap-2">
             <Circle fill="#7ECC32" className="size-4 text-[#7ECC32]" />
             <span>Software Developer</span>
