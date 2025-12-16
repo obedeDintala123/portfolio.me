@@ -10,7 +10,6 @@ import {
   Instagram,
   Linkedin,
   Menu,
-  MoveRight,
 } from 'lucide-react'
 
 import {
@@ -33,7 +32,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog'
 
 import { Button } from '@/components/ui/button'
@@ -429,7 +427,7 @@ function App() {
                   },
                 ].map((item) => (
                   <a href={item.url} target="_blank" rel="noreferrer">
-                    <item.icon className={item.width && 'size-6'} />
+                    <item.icon className={`${item.width ? 'size-6' : ''}`} />
                   </a>
                 ))}
               </div>
