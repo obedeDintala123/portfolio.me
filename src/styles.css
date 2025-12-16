@@ -24,11 +24,16 @@
   font-style: normal;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   @apply m-0;
   font-family: 'Satoshi-Regular', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 code {
@@ -38,6 +43,8 @@ code {
 
 @theme {
   --font-clash-grotesk: 'ClashGrotesk-Regular', sans-serif;
+  --font-satoshi: 'Satoshi-Regular', sans-serif;
+  --color-me-primary: #7ecc32;
 }
 
 :root {
@@ -185,4 +192,24 @@ h6 {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Translate Y para 101% */
+.translate-101 {
+  transform: translateY(101%);
+}
+
+/* Keyframes do marquee horizontal */
+@keyframes marquee {
+  from {
+    transform: translateX(0%);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Classe para animação contínua do marquee */
+.animate-marquee {
+  animation: marquee 15s linear infinite;
 }
