@@ -282,7 +282,13 @@ function App() {
               that generate value through software development.
             </span>
 
-            <Button className=" bg-white hover:bg-white cursor-pointer rounded-full md:w-1/4 py-6 px-2 flex items-center justify-between">
+            <Button
+              onClick={() => {
+                const contacSection = document.getElementById('contact')
+                contacSection?.scrollIntoView({ behavior: 'smooth' })
+              }}
+              className=" bg-white hover:bg-white cursor-pointer rounded-full md:w-1/4 py-6 px-2 flex items-center justify-between"
+            >
               <div className="px-2">
                 <span>Let's talk</span>
               </div>
@@ -423,7 +429,7 @@ function App() {
                   },
                 ].map((item) => (
                   <a href={item.url} target="_blank" rel="noreferrer">
-                    <item.icon className={item.width && 'size-6'}/>
+                    <item.icon className={item.width && 'size-6'} />
                   </a>
                 ))}
               </div>
