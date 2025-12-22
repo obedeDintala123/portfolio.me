@@ -89,7 +89,7 @@ function App() {
       handle: '@obede',
       borderColor: '#7ECC32',
       gradient: 'linear-gradient(180deg, #7ECC32, #000)',
-      url: 'https://linkedin.com/in/mikechen',
+      url: 'linkedin.com/in/obede-dintala-a14689366',
     },
   ]
 
