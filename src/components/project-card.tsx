@@ -1,4 +1,5 @@
 import { ExternalLink, Github } from 'lucide-react'
+import { Skeleton } from './ui/skeleton'
 
 interface ProjectCardProps {
   name: string
@@ -7,6 +8,7 @@ interface ProjectCardProps {
   githubUrl?: string
   liveUrl?: string
   image?: string
+  isLoading?: boolean
 }
 
 export default function ProjectCard({
@@ -16,8 +18,13 @@ export default function ProjectCard({
   githubUrl,
   liveUrl,
   image,
+  isLoading,
 }: ProjectCardProps) {
   const technologies = Array.isArray(technology) ? technology : [technology]
+
+  if (isLoading) {
+    return <ProjectCardSkeleton />
+  }
 
   return (
     <div
@@ -81,6 +88,17 @@ export default function ProjectCard({
           ))}
         </div>
       </div>
+    </div>
+  )
+}
+
+export function ProjectCardSkeleton() {
+  return (
+    <div className="h-44 w-full flex items-center justify-center relative">
+      <Skeleton className="h-40 w-full " />
+      <Skeleton className="h-4 w-[90%] absolute top-6 left-3 bg-[#1E1D21]" />
+      <Skeleton className="h-4 w-[60%] absolute top-12 left-3 bg-[#1E1D21]" />{' '}
+      <Skeleton className="h-4 w-[30%] absolute top-18 left-3 bg-[#1E1D21]" />
     </div>
   )
 }

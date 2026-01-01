@@ -19,18 +19,6 @@ import {
   SiWhatsapp,
 } from 'react-icons/si'
 
-// import { useState } from 'react'
-
-// import type { IconType } from 'react-icons/lib'
-
-// import {
-//   Dialog,
-//   DialogContent,
-//   DialogDescription,
-//   DialogHeader,
-//   DialogTitle,
-// } from '@/components/ui/dialog'
-
 import { Button } from '@/components/ui/button'
 
 import Squares from '@/components/Squares'
@@ -39,32 +27,18 @@ import ChromaGrid from '@/components/ChromaGrid'
 import LogoLoop from '@/components/LogoLoop'
 import { useRepos } from '@/api/requests'
 
-import ProjectCard from '@/components/project-card'
+import ProjectCard, { ProjectCardSkeleton } from '@/components/project-card'
 
 export const Route = createFileRoute('/')({
   component: App,
 })
 
 function App() {
-  // const [openDialog, setOpenDialog] = useState(false)
-  const { data: repos } = useRepos()
+  const { data: repos, isLoading } = useRepos()
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
-
-  // const [selectedProject, setSelectedProject] = useState<{
-  //   title: string
-  //   description: string
-  //   image: string
-  //   url: string
-  //   repoUrl: string
-  //   techs: Array<{
-  //     icon: IconType
-  //     title: string
-  //     href: string
-  //   }>
-  // } | null>(null)
 
   const techLogos = [
     { node: <SiReact />, title: 'React', href: 'https://react.dev' },
@@ -107,98 +81,14 @@ function App() {
     seletectedRepos.includes(repo.name),
   )
 
-  // const projects = [
-  //   {
-  //     id: 1,
-  //     title: 'ProduTech',
-  //     description:
-  //       'A modern productivity environment that allows users to create notes and tasks, helping them organize ideas and manage daily activities efficiently.',
-  //     image: '/produtech.png',
-  //     url: 'https://produ-tech-6v2s.vercel.app',
-  //     repoUrl: 'https://github.com/obedeDintala123/produTech.git',
-  //     techs: [
-  //       { icon: SiReact, title: 'React', href: 'https://react.dev' },
-  //       {
-  //         icon: SiTypescript,
-  //         title: 'TypeScript',
-  //         href: 'https://www.typescriptlang.org',
-  //       },
-  //       {
-  //         icon: SiTailwindcss,
-  //         title: 'Tailwind CSS',
-  //         href: 'https://tailwindcss.com',
-  //       },
-  //     ],
-  //   },
-
-  //   {
-  //     id: 2,
-  //     title: 'Yummy Restaurant',
-  //     description:
-  //       'A modern web application developed to simplify online reservations and orders for restaurants, providing a smooth and user-friendly experience for end users.',
-  //     image: '/yummy.png',
-  //     url: 'https://yummy-restaurant-five.vercel.app',
-  //     repoUrl: 'https://github.com/obedeDintala123/yummy-restaurant.git',
-  //     techs: [
-  //       { icon: SiReact, title: 'React', href: 'https://react.dev' },
-  //       {
-  //         icon: SiTypescript,
-  //         title: 'TypeScript',
-  //         href: 'https://www.typescriptlang.org',
-  //       },
-  //       {
-  //         icon: SiTailwindcss,
-  //         title: 'Tailwind CSS',
-  //         href: 'https://tailwindcss.com',
-  //       },
-  //     ],
-  //   },
-
-  //   {
-  //     id: 3,
-  //     title: 'AngoMart',
-  //     description:
-  //       'An online supermarket platform designed to showcase products and facilitate easy browsing for customers.',
-  //     image: '/angomart.png',
-  //     url: 'https://ango-mart-one.vercel.app',
-  //     repoUrl: 'https://github.com/obedeDintala123/AngoMart.git',
-  //     techs: [
-  //       { icon: SiHtml5, title: 'HTML5', href: 'https://react.dev' },
-  //       {
-  //         icon: SiCss3,
-  //         title: 'CSS3',
-  //         href: 'https://www.typescriptlang.org',
-  //       },
-  //     ],
-  //   },
-
-  //   {
-  //     id: 4,
-  //     title: 'Healthmap',
-  //     description:
-  //       'A web application designed to visualize and organize health-related information in a clear and accessible way.',
-  //     image: '/healthmap.png',
-  //     url: 'https://healthmap-two.vercel.app',
-  //     repoUrl: 'https://github.com/obedeDintala123/Healthmap.git',
-  //     techs: [
-  //       { icon: SiHtml5, title: 'HTML5', href: 'https://react.dev' },
-  //       {
-  //         icon: SiCss3,
-  //         title: 'CSS3',
-  //         href: 'https://www.typescriptlang.org',
-  //       },
-  //     ],
-  //   },
-  // ]
-
   return (
     <div>
-      <section className="w-full h-[100dvh] relative overflow-hidden border-b-2">
+      <section id='home' className="w-full h-[100dvh] relative overflow-hidden border-b-2">
         <header className="w-[90%] md:w-[60%] lg:w-1/2 rounded-full px-8 py-4 backdrop-blur-lg bg-white/5 border border-white/10 fixed top-10 left-6 md:left-1/4 z-50 flex justify-between items-center">
           <h1 className="text-xl">Dev</h1>
 
           <nav className="hidden md:flex space-x-8">
-            <a onClick={scrollToTop}>Home</a>
+            <a href="">Home</a>
             <a href="#projects">Projects</a>
             <a href="#about">About</a>
           </nav>
@@ -346,39 +236,20 @@ function App() {
         <h1 className="text-5xl mt-8">My Projects</h1>
         <article className="mt-12">
           <div className="grid md:grid-cols-4 gap-4">
-            {/* {projects.map((item) => (
-              <div
-                key={item.id}
-                onClick={() => {
-                  setSelectedProject(item)
-                  setOpenDialog(true)
-                }}
-                className="cursor-pointer"
-              >
-                <SpotlightCard className="custom-spotlight-card">
-                  <img src={item.image} alt={item.title} />
-                  <div className="flex items-center justify-between p-4">
-                    <span className="text-lg font-semibold">{item.title}</span>
-                    <div className="flex items-center gap-4">
-                      {item.techs.map((t) => (
-                        <t.icon className="size-5" key={t.title} />
-                      ))}
-                    </div>
-                  </div>
-                </SpotlightCard>
-              </div>
-            ))} */}
-
-            {filtredRepos?.map((item) => (
-              <ProjectCard
-                key={item.id}
-                name={item.name}
-                description={item.description}
-                githubUrl={item.html_url}
-                liveUrl={item.homepage}
-                technology={item.language}
-              />
-            ))}
+            {isLoading
+              ? Array.from({ length: 8 }).map((_, i) => (
+                  <ProjectCardSkeleton key={i} />
+                ))
+              : filtredRepos?.map((item) => (
+                  <ProjectCard
+                    key={item.id}
+                    name={item.name}
+                    description={item.description}
+                    githubUrl={item.html_url}
+                    liveUrl={item.homepage}
+                    technology={item.language}
+                  />
+                ))}
           </div>
 
           <div className="flex items-center justify-center mt-10">
@@ -467,63 +338,6 @@ function App() {
           </div>
         </div>
       </section>
-
-      {/* <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-        <DialogContent className="max-w-lg">
-          {selectedProject && (
-            <>
-              <img
-                src={selectedProject.image}
-                alt={selectedProject.title}
-                className="rounded-md mt-4 border"
-              />
-
-              <div>
-                <DialogHeader className="space-y-2">
-                  <DialogTitle>{selectedProject.title}</DialogTitle>
-                  <DialogDescription>
-                    {selectedProject.description}
-                  </DialogDescription>
-                  <div className="flex items-center gap-4">
-                    {selectedProject.techs.map((item) => (
-                      <item.icon className="size-6" key={item.title} />
-                    ))}
-                  </div>
-                </DialogHeader>
-
-                <div className="mt-4 grid grid-cols-[2fr_1fr] gap-4">
-                  <Button
-                    onClick={() =>
-                      window.open(
-                        `${selectedProject.repoUrl}`,
-                        '_blank',
-                        'noopener,noreferrer',
-                      )
-                    }
-                    className="bg-transparent border text-white border-white hover:bg-transparent cursor-pointer"
-                  >
-                    <Github />
-                    Repositório
-                  </Button>
-                  <Button
-                    onClick={() =>
-                      window.open(
-                        `${selectedProject.url}`,
-                        '_blank',
-                        'noopener,noreferrer',
-                      )
-                    }
-                    className="w-full cursor-pointer"
-                  >
-                    <Globe />
-                    Visit Project
-                  </Button>
-                </div>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog> */}
     </div>
   )
 }
