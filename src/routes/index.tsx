@@ -6,7 +6,6 @@ import {
   Circle,
   Facebook,
   Github,
-  Globe,
   Instagram,
   Linkedin,
   Menu,
@@ -20,17 +19,17 @@ import {
   SiWhatsapp,
 } from 'react-icons/si'
 
-import { useState } from 'react'
+// import { useState } from 'react'
 
-import type { IconType } from 'react-icons/lib'
+// import type { IconType } from 'react-icons/lib'
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+// import {
+//   Dialog,
+//   DialogContent,
+//   DialogDescription,
+//   DialogHeader,
+//   DialogTitle,
+// } from '@/components/ui/dialog'
 
 import { Button } from '@/components/ui/button'
 
@@ -47,25 +46,25 @@ export const Route = createFileRoute('/')({
 })
 
 function App() {
-  const [openDialog, setOpenDialog] = useState(false)
+  // const [openDialog, setOpenDialog] = useState(false)
   const { data: repos } = useRepos()
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const [selectedProject, setSelectedProject] = useState<{
-    title: string
-    description: string
-    image: string
-    url: string
-    repoUrl: string
-    techs: Array<{
-      icon: IconType
-      title: string
-      href: string
-    }>
-  } | null>(null)
+  // const [selectedProject, setSelectedProject] = useState<{
+  //   title: string
+  //   description: string
+  //   image: string
+  //   url: string
+  //   repoUrl: string
+  //   techs: Array<{
+  //     icon: IconType
+  //     title: string
+  //     href: string
+  //   }>
+  // } | null>(null)
 
   const techLogos = [
     { node: <SiReact />, title: 'React', href: 'https://react.dev' },
@@ -106,7 +105,7 @@ function App() {
 
   const filtredRepos = repos?.filter((repo) =>
     seletectedRepos.includes(repo.name),
-  );
+  )
 
   // const projects = [
   //   {
@@ -469,7 +468,7 @@ function App() {
         </div>
       </section>
 
-      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+      {/* <Dialog open={openDialog} onOpenChange={setOpenDialog}>
         <DialogContent className="max-w-lg">
           {selectedProject && (
             <>
@@ -524,7 +523,7 @@ function App() {
             </>
           )}
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
     </div>
   )
 }
