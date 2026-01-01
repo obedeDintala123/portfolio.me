@@ -13,8 +13,6 @@ import {
 } from 'lucide-react'
 
 import {
-  SiCss3,
-  SiHtml5,
   SiNextdotjs,
   SiReact,
   SiTailwindcss,
@@ -40,7 +38,9 @@ import Squares from '@/components/Squares'
 import TextType from '@/components/TextType'
 import ChromaGrid from '@/components/ChromaGrid'
 import LogoLoop from '@/components/LogoLoop'
-import SpotlightCard from '@/components/SpotlightCard'
+import { useRepos } from '@/api/requests'
+
+import ProjectCard from '@/components/project-card'
 
 export const Route = createFileRoute('/')({
   component: App,
@@ -48,6 +48,7 @@ export const Route = createFileRoute('/')({
 
 function App() {
   const [openDialog, setOpenDialog] = useState(false)
+  const { data: repos } = useRepos()
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -93,89 +94,103 @@ function App() {
     },
   ]
 
-  const projects = [
-    {
-      id: 1,
-      title: 'ProduTech',
-      description:
-        'A modern productivity environment that allows users to create notes and tasks, helping them organize ideas and manage daily activities efficiently.',
-      image: '/produtech.png',
-      url: 'https://produ-tech-6v2s.vercel.app',
-      repoUrl: 'https://github.com/obedeDintala123/produTech.git',
-      techs: [
-        { icon: SiReact, title: 'React', href: 'https://react.dev' },
-        {
-          icon: SiTypescript,
-          title: 'TypeScript',
-          href: 'https://www.typescriptlang.org',
-        },
-        {
-          icon: SiTailwindcss,
-          title: 'Tailwind CSS',
-          href: 'https://tailwindcss.com',
-        },
-      ],
-    },
-
-    {
-      id: 2,
-      title: 'Yummy Restaurant',
-      description:
-        'A modern web application developed to simplify online reservations and orders for restaurants, providing a smooth and user-friendly experience for end users.',
-      image: '/yummy.png',
-      url: 'https://yummy-restaurant-five.vercel.app',
-      repoUrl: 'https://github.com/obedeDintala123/yummy-restaurant.git',
-      techs: [
-        { icon: SiReact, title: 'React', href: 'https://react.dev' },
-        {
-          icon: SiTypescript,
-          title: 'TypeScript',
-          href: 'https://www.typescriptlang.org',
-        },
-        {
-          icon: SiTailwindcss,
-          title: 'Tailwind CSS',
-          href: 'https://tailwindcss.com',
-        },
-      ],
-    },
-
-    {
-      id: 3,
-      title: 'AngoMart',
-      description:
-        'An online supermarket platform designed to showcase products and facilitate easy browsing for customers.',
-      image: '/angomart.png',
-      url: 'https://ango-mart-one.vercel.app',
-      repoUrl: 'https://github.com/obedeDintala123/AngoMart.git',
-      techs: [
-        { icon: SiHtml5, title: 'HTML5', href: 'https://react.dev' },
-        {
-          icon: SiCss3,
-          title: 'CSS3',
-          href: 'https://www.typescriptlang.org',
-        },
-      ],
-    },
-
-    {
-      id: 4,
-      title: 'Healthmap',
-      description:
-        'A web application designed to visualize and organize health-related information in a clear and accessible way.',
-      image: '/healthmap.png',
-      url: 'https://healthmap-two.vercel.app',
-      repoUrl: 'https://github.com/obedeDintala123/Healthmap.git',
-      techs: [
-        { icon: SiHtml5, title: 'HTML5', href: 'https://react.dev' },
-        {
-          icon: SiCss3,
-          title: 'CSS3',
-          href: 'https://www.typescriptlang.org',
-        },
-      ],
-    },
+  const seletectedRepos = [
+    'produTech',
+    'yummy-restaurant',
+    'yummy-api',
+    'AngoMart',
+    'Healthmap',
+    'tasking-front',
+    'task-manager-api',
   ]
+
+  const filtredRepos = repos?.filter((repo) =>
+    seletectedRepos.includes(repo.name),
+  );
+
+  // const projects = [
+  //   {
+  //     id: 1,
+  //     title: 'ProduTech',
+  //     description:
+  //       'A modern productivity environment that allows users to create notes and tasks, helping them organize ideas and manage daily activities efficiently.',
+  //     image: '/produtech.png',
+  //     url: 'https://produ-tech-6v2s.vercel.app',
+  //     repoUrl: 'https://github.com/obedeDintala123/produTech.git',
+  //     techs: [
+  //       { icon: SiReact, title: 'React', href: 'https://react.dev' },
+  //       {
+  //         icon: SiTypescript,
+  //         title: 'TypeScript',
+  //         href: 'https://www.typescriptlang.org',
+  //       },
+  //       {
+  //         icon: SiTailwindcss,
+  //         title: 'Tailwind CSS',
+  //         href: 'https://tailwindcss.com',
+  //       },
+  //     ],
+  //   },
+
+  //   {
+  //     id: 2,
+  //     title: 'Yummy Restaurant',
+  //     description:
+  //       'A modern web application developed to simplify online reservations and orders for restaurants, providing a smooth and user-friendly experience for end users.',
+  //     image: '/yummy.png',
+  //     url: 'https://yummy-restaurant-five.vercel.app',
+  //     repoUrl: 'https://github.com/obedeDintala123/yummy-restaurant.git',
+  //     techs: [
+  //       { icon: SiReact, title: 'React', href: 'https://react.dev' },
+  //       {
+  //         icon: SiTypescript,
+  //         title: 'TypeScript',
+  //         href: 'https://www.typescriptlang.org',
+  //       },
+  //       {
+  //         icon: SiTailwindcss,
+  //         title: 'Tailwind CSS',
+  //         href: 'https://tailwindcss.com',
+  //       },
+  //     ],
+  //   },
+
+  //   {
+  //     id: 3,
+  //     title: 'AngoMart',
+  //     description:
+  //       'An online supermarket platform designed to showcase products and facilitate easy browsing for customers.',
+  //     image: '/angomart.png',
+  //     url: 'https://ango-mart-one.vercel.app',
+  //     repoUrl: 'https://github.com/obedeDintala123/AngoMart.git',
+  //     techs: [
+  //       { icon: SiHtml5, title: 'HTML5', href: 'https://react.dev' },
+  //       {
+  //         icon: SiCss3,
+  //         title: 'CSS3',
+  //         href: 'https://www.typescriptlang.org',
+  //       },
+  //     ],
+  //   },
+
+  //   {
+  //     id: 4,
+  //     title: 'Healthmap',
+  //     description:
+  //       'A web application designed to visualize and organize health-related information in a clear and accessible way.',
+  //     image: '/healthmap.png',
+  //     url: 'https://healthmap-two.vercel.app',
+  //     repoUrl: 'https://github.com/obedeDintala123/Healthmap.git',
+  //     techs: [
+  //       { icon: SiHtml5, title: 'HTML5', href: 'https://react.dev' },
+  //       {
+  //         icon: SiCss3,
+  //         title: 'CSS3',
+  //         href: 'https://www.typescriptlang.org',
+  //       },
+  //     ],
+  //   },
+  // ]
 
   return (
     <div>
@@ -332,7 +347,7 @@ function App() {
         <h1 className="text-5xl mt-8">My Projects</h1>
         <article className="mt-12">
           <div className="grid md:grid-cols-4 gap-4">
-            {projects.map((item) => (
+            {/* {projects.map((item) => (
               <div
                 key={item.id}
                 onClick={() => {
@@ -353,6 +368,17 @@ function App() {
                   </div>
                 </SpotlightCard>
               </div>
+            ))} */}
+
+            {filtredRepos?.map((item) => (
+              <ProjectCard
+                key={item.id}
+                name={item.name}
+                description={item.description}
+                githubUrl={item.html_url}
+                liveUrl={item.homepage}
+                technology={item.language}
+              />
             ))}
           </div>
 
