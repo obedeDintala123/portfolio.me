@@ -59,7 +59,7 @@ function App() {
     {
       image: '/me.jpeg',
       title: 'Obede Dintala',
-      subtitle: 'Software Developer',
+      subtitle: 'Web Developer',
       handle: '@obede',
       borderColor: '#7ECC32',
       gradient: 'linear-gradient(180deg, #7ECC32, #000)',
@@ -71,10 +71,11 @@ function App() {
     'produTech',
     'yummy-restaurant',
     'yummy-api',
+'tasking-front',
+    'task-manager-api',
     'AngoMart',
     'Healthmap',
-    'tasking-front',
-    'task-manager-api',
+   
   ]
 
   const filtredRepos = repos?.filter((repo) =>
