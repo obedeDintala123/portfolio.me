@@ -136,7 +136,7 @@ function App() {
           </h1>
           <div className="w-full lg:w-1/2 backdrop-blur-lg bg-white/5 border border-white/10 p-2 rounded-full flex items-center justify-center gap-2">
             <Circle fill="#7ECC32" className="size-4 text-[#7ECC32]" />
-            <span>Software Developer</span>
+            <span>Web Developer</span>
           </div>
         </div>
 
