@@ -10,33 +10,53 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TermsOfServiceIndexRouteImport } from './routes/terms-of-service/index'
+import { Route as PrivacyPolicyIndexRouteImport } from './routes/privacy-policy/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TermsOfServiceIndexRoute = TermsOfServiceIndexRouteImport.update({
+  id: '/terms-of-service/',
+  path: '/terms-of-service/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyIndexRoute = PrivacyPolicyIndexRouteImport.update({
+  id: '/privacy-policy/',
+  path: '/privacy-policy/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/privacy-policy': typeof PrivacyPolicyIndexRoute
+  '/terms-of-service': typeof TermsOfServiceIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/privacy-policy': typeof PrivacyPolicyIndexRoute
+  '/terms-of-service': typeof TermsOfServiceIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/privacy-policy/': typeof PrivacyPolicyIndexRoute
+  '/terms-of-service/': typeof TermsOfServiceIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/privacy-policy' | '/terms-of-service'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/privacy-policy' | '/terms-of-service'
+  id: '__root__' | '/' | '/privacy-policy/' | '/terms-of-service/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PrivacyPolicyIndexRoute: typeof PrivacyPolicyIndexRoute
+  TermsOfServiceIndexRoute: typeof TermsOfServiceIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +68,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/terms-of-service/': {
+      id: '/terms-of-service/'
+      path: '/terms-of-service'
+      fullPath: '/terms-of-service'
+      preLoaderRoute: typeof TermsOfServiceIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy/': {
+      id: '/privacy-policy/'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PrivacyPolicyIndexRoute: PrivacyPolicyIndexRoute,
+  TermsOfServiceIndexRoute: TermsOfServiceIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
