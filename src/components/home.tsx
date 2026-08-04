@@ -1,10 +1,20 @@
-"use client"
-
 import React from "react"
+import gsap from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
+import meImage from "../assets/images/me.png"
+
 
 import Splash from "./splash"
-import { AboutSection, HeroSection, SkillSection, WorkSection } from "./sections"
+import {
+  AboutSection,
+  HeroSection,
+  SkillsGravitySection,
+  WorkSection,
+} from "./sections"
 import { useHeaderThemeSwitch, useHomeAnimations } from "./gsap-animations"
+import Footer from "./footer"
+
+gsap.registerPlugin(ScrollTrigger)
 
 export default function HomePage() {
   const [isLoading, setIsLoading] = React.useState(true)
@@ -39,12 +49,43 @@ export default function HomePage() {
 
   useHeaderThemeSwitch({ headerRef, ready: !isLoading })
 
+  React.useEffect(() => {
+    if (isLoading) return
+
+    const imgs = Array.from(document.images)
+    const pending = imgs.filter((img) => !img.complete)
+
+    if (pending.length === 0) {
+      ScrollTrigger.refresh()
+      return
+    }
+
+    let remaining = pending.length
+    const onImgLoad = () => {
+      remaining -= 1
+      if (remaining === 0) {
+        ScrollTrigger.refresh()
+      }
+    }
+
+    pending.forEach((img) =>
+      img.addEventListener("load", onImgLoad, { once: true })
+    )
+
+    const fallback = setTimeout(() => ScrollTrigger.refresh(), 2000)
+
+    return () => {
+      pending.forEach((img) => img.removeEventListener("load", onImgLoad))
+      clearTimeout(fallback)
+    }
+  }, [isLoading])
+
   if (isLoading) {
     return <Splash onComplete={() => setIsLoading(false)} />
   }
 
   return (
-    <main className="relative overflow-x-hidden">
+    <main className="relative overflow-x-hidden overflow-y-visible">
       <HeroSection
         isLoading={isLoading}
         heroRef={heroRef}
@@ -56,9 +97,19 @@ export default function HomePage() {
 
       <WorkSection workRef={workRef} trackRef={trackRef} data-theme="dark" />
 
-      <AboutSection />
-
-      <SkillSection />
+      <div
+        style={{
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${meImage.src})`,
+          backgroundPosition: "center",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+        }}
+        className="relative z-10"
+      >
+        <AboutSection data-theme="dark" />
+        <SkillsGravitySection />
+      </div>
+      <Footer />
     </main>
   )
 }

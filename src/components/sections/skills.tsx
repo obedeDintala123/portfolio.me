@@ -1,330 +1,372 @@
-"use client";
-
-import { useLayoutEffect, useRef, type CSSProperties } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-if (typeof window !== "undefined") {
-    gsap.registerPlugin(ScrollTrigger);
-}
+import { useEffect, useRef, useState } from "react"
+// @ts-ignore — matter-js may not ship bundled type declarations
+import Matter from "matter-js"
 
 /* ------------------------------------------------------------------ */
-/* Data                                                                */
+/* Skill icons (used instead of DEFAULT_IMAGES)                        */
 /* ------------------------------------------------------------------ */
 
-interface SkillIcon {
-    src: string;
-    alt: string;
-    angle: number; // position along the arc, in degrees (0 = straight up)
+const SKILL_IMAGES = [
+  {
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg",
+    alt: "HTML5",
+  },
+  {
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg",
+    alt: "CSS3",
+  },
+  {
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
+    alt: "JavaScript",
+  },
+  {
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
+    alt: "React",
+  },
+  {
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
+    alt: "TypeScript",
+  },
+  {
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg",
+    alt: "Next.js",
+  },
+  {
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
+    alt: "Node.js",
+  },
+  {
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg",
+    alt: "Express",
+  },
+  {
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nestjs/nestjs-original.svg",
+    alt: "NestJS",
+  },
+  {
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg",
+    alt: "MySQL",
+  },
+  {
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg",
+    alt: "PostgreSQL",
+  },
+  {
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg",
+    alt: "Figma",
+  },
+  {
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg",
+    alt: "Git",
+  },
+  {
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg",
+    alt: "VS Code",
+  },
+  {
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg",
+    alt: "Linux",
+  },
+  { src: "https://skillicons.dev/icons?i=prisma", alt: "Prisma" },
+  { src: "https://skillicons.dev/icons?i=tailwind", alt: "Tailwind CSS" },
+  { src: "https://skillicons.dev/icons?i=vite", alt: "Vite" },
+  { src: "https://skillicons.dev/icons?i=astro", alt: "Astro" },
+  { src: "https://skillicons.dev/icons?i=c", alt: "C" },
+  { src: "https://skillicons.dev/icons?i=postman", alt: "Postman" },
+]
+
+/**
+ * SkillsGravity
+ * Same mechanic as the original Gravity Gallery: drops a set of bodies
+ * (circles or squares) into a Matter.js world — gravity, walls, click-drag
+ * with the mouse. Bodies are filled with skill icons instead of photos,
+ * and a heading sits behind everything (z-index 0) so it shows through
+ * the gaps as the icons settle.
+ *
+ * @framerSupportedLayoutWidth any-prefer-fixed
+ * @framerSupportedLayoutHeight any-prefer-fixed
+ */
+
+const M: any = Matter
+
+// Static boundary walls around the container (thick, just outside the edges).
+function makeWalls(
+  bounding: { width: number; height: number },
+  world: any,
+  opts: any
+) {
+  const { width: w, height: h } = bounding
+  const t = 200
+  const walls: any[] = []
+  if (opts.top)
+    walls.push(
+      M.Bodies.rectangle(w / 2, -t / 2, w + 2 * t, t, { isStatic: true })
+    )
+  if (opts.bottom)
+    walls.push(
+      M.Bodies.rectangle(w / 2, h + t / 2, w + 2 * t, t, {
+        isStatic: true,
+      })
+    )
+  if (opts.left)
+    walls.push(
+      M.Bodies.rectangle(-t / 2, h / 2, t, h + 2 * t, { isStatic: true })
+    )
+  if (opts.right)
+    walls.push(
+      M.Bodies.rectangle(w + t / 2, h / 2, t, h + 2 * t, {
+        isStatic: true,
+      })
+    )
+  M.Composite.add(world, walls)
+  return walls
 }
 
-interface SkillArc {
-    radius: number; // px on desktop
-    radiusMobile: number; // px on small screens
-    swing: number; // degrees the whole arc sways to each side
-    duration: number; // seconds for one direction of the swing
-    iconSize: number; // px
-    icons: SkillIcon[];
-}
-
-/** Evenly spaces `count` icons across [-spread, +spread] degrees. */
-function fan(spread: number, sources: { src: string; alt: string }[]): SkillIcon[] {
-    const count = sources.length;
-    const step = count > 1 ? (spread * 2) / (count - 1) : 0;
-    return sources.map((s, i) => ({
-        ...s,
-        angle: count > 1 ? -spread + i * step : 0,
-    }));
-}
-
-const SKILL_ARCS: SkillArc[] = [
-    {
-        radius: 300,
-        radiusMobile: 180,
-        swing: 22,
-        duration: 7,
-        iconSize: 56,
-        icons: fan(96, [
-            { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg", alt: "HTML5" },
-            { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg", alt: "CSS3" },
-            { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg", alt: "JavaScript" },
-            { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg", alt: "React" },
-            { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg", alt: "TypeScript" },
-            { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg", alt: "Next.js" },
-            { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg", alt: "Node.js" },
-        ]),
-    },
-    {
-        radius: 390,
-        radiusMobile: 250,
-        swing: 16,
-        duration: 9,
-        iconSize: 54,
-        icons: fan(86, [
-            { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg", alt: "Express" },
-            { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nestjs/nestjs-original.svg", alt: "NestJS" },
-            { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg", alt: "MySQL" },
-            { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg", alt: "PostgreSQL" },
-            { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg", alt: "Figma" },
-            { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg", alt: "Git" },
-            { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg", alt: "VS Code" },
-        ]),
-    },
-    {
-        radius: 480,
-        radiusMobile: 320,
-        swing: 12,
-        duration: 11,
-        iconSize: 52,
-        icons: fan(100, [
-            { src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg", alt: "Linux" },
-            { src: "https://skillicons.dev/icons?i=prisma", alt: "Prisma" },
-            { src: "https://skillicons.dev/icons?i=tailwind", alt: "Tailwind CSS" },
-            { src: "https://skillicons.dev/icons?i=vite", alt: "Vite" },
-            { src: "https://skillicons.dev/icons?i=astro", alt: "Astro" },
-            { src: "https://skillicons.dev/icons?i=c", alt: "C" },
-            { src: "https://skillicons.dev/icons?i=postman", alt: "Postman" },
-        ]),
-    },
-];
-
-const SPACE = "\u00A0";
-
-/* ------------------------------------------------------------------ */
-/* Text mask helper (same technique as AboutSection)                  */
-/* ------------------------------------------------------------------ */
-
-function buildUnits(text: string) {
-    const wrapper = document.createElement("span");
-    wrapper.style.display = "inline";
-    const units: HTMLSpanElement[] = [];
-
-    text.split(/(\s+)/).forEach((part) => {
-        if (part === "") return;
-        const isSpace = /^\s+$/.test(part);
-
-        const mask = document.createElement("span");
-        mask.style.display = "inline-block";
-        mask.style.overflow = "hidden";
-        mask.style.verticalAlign = "bottom";
-        mask.style.lineHeight = "inherit";
-
-        const inner = document.createElement("span");
-        inner.style.display = "inline-block";
-        inner.style.willChange = "transform";
-        inner.textContent = isSpace ? SPACE : part;
-
-        mask.appendChild(inner);
-        wrapper.appendChild(mask);
-        if (!isSpace) units.push(inner);
-    });
-
-    return { wrapper, units };
-}
-
-/* ------------------------------------------------------------------ */
-/* Component                                                          */
-/* ------------------------------------------------------------------ */
-
-interface SkillsArcSectionProps {
-    heading?: string;
-    style?: CSSProperties;
-}
-
-export default function SkillSection({
-    heading: headingText = "SKILLS",
+export default function SkillsGravity(props: any) {
+  props = { ...COMPONENT_DEFAULTS, ...props }
+  const {
+    heading = "SKILLS",
+    images = SKILL_IMAGES,
+    count = 21,
+    size = 90,
+    shape = "circle",
+    color = "#FFFFFF",
+    friction = 10,
+    mouseEnable = true,
+    mouseStiffness = 0.9,
+    mouseAngularStiffness = 0,
+    gravX = -0.25,
+    gravY = 2.5,
+    wallOptions = { top: true, bottom: true, right: true, left: true },
     style,
-}: SkillsArcSectionProps) {
-    const sectionRef = useRef<HTMLElement>(null);
-    const headingRef = useRef<HTMLHeadingElement>(null);
-    const arcsRef = useRef<HTMLDivElement>(null);
+  } = props
 
-    useLayoutEffect(() => {
-        const section = sectionRef.current;
-        const headingEl = headingRef.current;
-        const arcsEl = arcsRef.current;
-        if (!section || !headingEl || !arcsEl) return;
+  const [responsiveSize, setResponsiveSize] = useState(size)
+  const n = Math.max(1, Math.min(40, Math.round(count)))
+  const containerRef = useRef<HTMLDivElement>(null)
+  const rafRef = useRef(0)
 
-        const prefersReduced = window.matchMedia?.(
-            "(prefers-reduced-motion: reduce)"
-        ).matches;
+  useEffect(() => {
+    const updateSize = () => {
+      setResponsiveSize(window.innerWidth <= 640 ? 70 : size)
+    }
 
-        headingEl.replaceChildren();
-        const { wrapper, units } = buildUnits(headingText);
-        headingEl.appendChild(wrapper);
+    updateSize()
+    window.addEventListener("resize", updateSize)
+    return () => window.removeEventListener("resize", updateSize)
+  }, [size])
 
-        const iconEls = Array.from(
-            arcsEl.querySelectorAll<HTMLElement>("[data-skill-icon]")
-        );
+  const depKey = JSON.stringify({
+    n,
+    responsiveSize,
+    shape,
+    gravX,
+    gravY,
+    wallOptions,
+    friction,
+    mouseEnable,
+    mouseStiffness,
+    mouseAngularStiffness,
+  })
 
-        if (prefersReduced) {
-            gsap.set(units, { yPercent: 0, opacity: 1 });
-            gsap.set(iconEls, { opacity: 1, scale: 1 });
-            return;
-        }
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
 
-        gsap.set(units, { yPercent: 120, opacity: 0 });
-        gsap.set(iconEls, { opacity: 0, scale: 0.4 });
+    const engine = M.Engine.create({
+      enableSleeping: true,
+      gravity: { x: gravX, y: gravY },
+    })
 
-        const ctx = gsap.context(() => {
-            const tl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: section,
-                    start: "top 80%",
-                    toggleActions: "play none none reverse",
-                },
-            });
+    const bounding = container.getBoundingClientRect()
+    makeWalls(bounding, engine.world, wallOptions)
 
-            tl.to(units, {
-                yPercent: 0,
-                opacity: 1,
-                duration: 0.7,
-                stagger: 0.04,
-                ease: "power2.out",
-            }).to(
-                iconEls,
-                {
-                    opacity: 1,
-                    scale: 1,
-                    duration: 0.5,
-                    stagger: { each: 0.025, from: "center" },
-                    ease: "back.out(1.6)",
-                },
-                "-=0.25"
-            );
-        }, section);
+    let mouseConstraint: any = null
+    const onLeave = () => mouseConstraint?.mouse?.mouseup(new Event("mouseup"))
+    if (mouseEnable) {
+      const mouse = M.Mouse.create(container)
+      mouseConstraint = M.MouseConstraint.create(engine, {
+        mouse,
+        constraint: {
+          angularStiffness: mouseAngularStiffness,
+          stiffness: mouseStiffness,
+        },
+      })
+      M.Composite.add(engine.world, mouseConstraint)
+      const el = mouseConstraint.mouse.element
+      el.removeEventListener("wheel", mouseConstraint.mouse.mousewheel)
+      container.addEventListener("mouseleave", onLeave)
+    }
 
-        return () => ctx.revert();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [headingText]);
+    // Build the generated bodies, spread across the top so they fall in.
+    // Friction 1–10 → 0.1–1; a little air friction keeps motion settled.
+    const bodyOpts = {
+      friction: Math.max(1, Math.min(10, friction)) / 10,
+      frictionAir: 0.02,
+    }
+    const made: any[] = []
+    for (let i = 0; i < n; i++) {
+      const x = ((i + 0.5) / n) * bounding.width
+      const y = responsiveSize / 2 + i * (responsiveSize * 0.15 + 10)
+      const body =
+        shape === "square"
+          ? M.Bodies.rectangle(x, y, responsiveSize, responsiveSize, bodyOpts)
+          : M.Bodies.circle(x, y, responsiveSize / 2, bodyOpts)
+      made.push(body)
+    }
+    M.Composite.add(engine.world, made)
 
-    return (
-        <section
-            ref={sectionRef}
-            style={{
-                position: "relative",
-                width: "100%",
-                minHeight: "70vh",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "flex-start",
-                paddingTop: "4rem",
-                overflow: "hidden",
-                ...style,
-            }}
-        >
-            <style>{`
-        @keyframes arc-swing {
-          from { transform: rotate(calc(var(--start-angle) - var(--swing) * 1deg)); }
-          to   { transform: rotate(calc(var(--start-angle) + var(--swing) * 1deg)); }
-        }
-        @keyframes arc-counter-swing {
-          from { transform: rotate(calc(-1 * (var(--start-angle) - var(--swing) * 1deg))); }
-          to   { transform: rotate(calc(-1 * (var(--start-angle) + var(--swing) * 1deg))); }
-        }
-        .skill-icon-bubble {
-          transition: transform 0.25s ease, box-shadow 0.25s ease;
-        }
-        .skill-icon-bubble:hover {
-          transform: scale(1.18) !important;
-          box-shadow: 0 6px 20px rgba(0,0,0,0.18);
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .skill-arm { animation: none !important; }
-        }
-      `}</style>
+    const els = Array.from(
+      container.querySelectorAll<HTMLElement>("[data-physics-body]")
+    )
 
-            <h2
-                ref={headingRef}
-                style={{
-                    position: "relative",
-                    margin: 0,
-                    fontSize: "clamp(5rem,12vw,12rem)",
-                    fontWeight: 700,
-                    letterSpacing: "0.08em",
-                    textAlign: "center",
-                }}
-            />
+    const update = () => {
+      rafRef.current = requestAnimationFrame(update)
+      for (let i = 0; i < made.length; i++) {
+        const el = els[i]
+        if (!el) continue
+        const { position, angle } = made[i]
+        el.style.visibility = "visible"
+        el.style.transform = `translate3d(${position.x}px, ${position.y}px, 0) translate(-50%, -50%) rotate(${angle}rad)`
+      }
+      M.Engine.update(engine)
+    }
+    update()
 
+    return () => {
+      cancelAnimationFrame(rafRef.current)
+      if (mouseEnable) container.removeEventListener("mouseleave", onLeave)
+      M.World.clear(engine.world, false)
+      M.Engine.clear(engine)
+    }
+  }, [depKey])
+
+  // Cycle the icons across the bodies (repeats if count > images.length).
+  const imgFor = (i: number) => {
+    const imgs =
+      Array.isArray(images) && images.length > 0 ? images : SKILL_IMAGES
+    if (!imgs.length) return undefined
+    return imgs[i % imgs.length]?.src
+  }
+
+  return (
+    <div
+      style={{
+        position: "relative",
+        width: "100%",
+        height: style?.height ?? "100vh",
+        overflow: "hidden",
+      }}
+      data-theme="dark"
+    >
+      {/* Heading behind everything */}
+      <h2
+        className="text-background2"
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          inset: 0,
+          margin: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "clamp(3rem, 12vw, 12rem)",
+          fontWeight: 700,
+          letterSpacing: "0.08em",
+          textAlign: "center",
+          zIndex: 0,
+          pointerEvents: "none",
+          userSelect: "none",
+        }}
+      >
+        {heading}
+      </h2>
+
+      {/* Physics container, on top of the heading */}
+      <div
+        ref={containerRef}
+        style={{
+          ...style,
+          position: "relative",
+          zIndex: 1,
+          height: "100%",
+          width: "100%",
+          overflow: "hidden",
+          userSelect: "none",
+          WebkitUserSelect: "none",
+          touchAction: "pan-y",
+        }}
+        draggable={false}
+        onDragStart={(e) => e.preventDefault()}
+        onMouseDown={(e) => e.preventDefault()}
+      >
+        {Array.from({ length: n }).map((_, i) => {
+          const src = imgFor(i)
+          return (
             <div
-                ref={arcsRef}
-                style={{
-                    position: "relative",
-                    width: "100%",
-                    flex: 1,
-                    display: "flex",
-                    justifyContent: "center",
-                }}
+              className="bg-background2/30"
+              key={i}
+              data-physics-body=""
+              style={{
+                position: "absolute",
+                visibility: "hidden",
+                left: 0,
+                top: 0,
+                width: responsiveSize,
+                height: responsiveSize,
+                borderRadius: shape === "circle" ? "50%" : 0,
+                overflow: "hidden",
+                boxShadow: "0 4px 14px rgba(0,0,0,0.12)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "grab",
+                userSelect: "none",
+                WebkitUserSelect: "none",
+                willChange: "transform",
+              }}
+              draggable={false}
             >
-                {SKILL_ARCS.map((arc, arcIndex) => (
-                    <div
-                        key={arcIndex}
-                        className="skills-arc"
-                        style={{
-                            position: "absolute",
-                            bottom: 0,
-                            left: "50%",
-                            width: `min(${arc.radius * 2}px, 92vw)`,
-                            height: `min(${arc.radius}px, 46vw)`,
-                            transform: "translateX(-50%)",
-                            pointerEvents: "none",
-                        }}
-                    >
-                        {arc.icons.map((icon, iconIndex) => (
-                            <div
-                                key={iconIndex}
-                                className="skill-arm"
-                                style={
-                                    {
-                                        position: "absolute",
-                                        bottom: 0,
-                                        left: "50%",
-                                        height: "100%",
-                                        width: 0,
-                                        transformOrigin: "bottom center",
-                                        "--start-angle": `${icon.angle}deg`,
-                                        "--swing": arc.swing,
-                                        animation: `arc-swing ${arc.duration}s ease-in-out infinite alternate`,
-                                        animationDelay: `${iconIndex * 0.15}s`,
-                                    } as CSSProperties
-                                }
-                            >
-                                <div
-                                    data-skill-icon
-                                    className="skill-icon-bubble"
-                                    style={
-                                        {
-                                            position: "absolute",
-                                            top: 0,
-                                            left: 0,
-                                            transform: "translate(-50%, -50%)",
-                                            transformOrigin: "center",
-                                            "--start-angle": `${icon.angle}deg`,
-                                            "--swing": arc.swing,
-                                            animation: `arc-counter-swing ${arc.duration}s ease-in-out infinite alternate`,
-                                            animationDelay: `${iconIndex * 0.15}s`,
-                                            width: arc.iconSize + 36,
-                                            height: arc.iconSize + 36,
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                        } as CSSProperties
-                                    }
-                                >
-                                    <img
-                                        src={icon.src}
-                                        alt={icon.alt}
-                                        width={arc.iconSize}
-                                        height={arc.iconSize}
-                                        style={{ width: arc.iconSize, height: arc.iconSize, objectFit: "contain" }}
-                                    />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                ))}
+              {src && (
+                <img
+                  src={src}
+                  alt=""
+                  draggable={false}
+                  style={{
+                    width: responsiveSize * 0.55,
+                    height: responsiveSize * 0.55,
+                    objectFit: "cover",
+                    pointerEvents: "none",
+                  }}
+                />
+              )}
             </div>
-        </section>
-    );
+          )
+        })}
+      </div>
+    </div>
+  )
 }
+
+const COMPONENT_DEFAULTS = {
+  heading: "SKILLS",
+  images: SKILL_IMAGES,
+  count: 21,
+  size: 90,
+  shape: "circle",
+  color: "#FFFFFF",
+  gravY: 2.5,
+  gravX: -0.25,
+  wallOptions: {
+    top: true,
+    bottom: true,
+    left: true,
+    right: true,
+  },
+  friction: 10,
+  mouseEnable: true,
+  mouseStiffness: 0.9,
+  mouseAngularStiffness: 0,
+}
+
+SkillsGravity.displayName = "SkillsGravity"

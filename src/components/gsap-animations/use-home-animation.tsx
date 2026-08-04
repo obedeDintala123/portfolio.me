@@ -118,15 +118,19 @@ export function useHomeAnimations({
       // Horizontal
       //--------------------------------------
 
-      const distance = track.scrollWidth - work.clientWidth
+      // 🔧 FIX: distance calculado dentro de funções, não uma vez só.
+      // Isto permite que invalidateOnRefresh recalcule os valores reais
+      // sempre que ScrollTrigger.refresh() correr (ex: depois das imagens
+      // do WorkSection carregarem e track.scrollWidth mudar).
+      const getDistance = () => track.scrollWidth - work.clientWidth
 
       gsap.to(track, {
-        x: -distance,
+        x: () => -getDistance(),
         ease: "none",
         scrollTrigger: {
           trigger: work,
           start: "top top",
-          end: `+=${distance}`,
+          end: () => "+=" + getDistance(),
           scrub: true,
           pin: true,
           anticipatePin: 1,

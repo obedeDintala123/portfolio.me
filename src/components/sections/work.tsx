@@ -60,7 +60,7 @@ export default function WorkSection({ workRef, trackRef, ...props }: Props) {
       <div ref={trackRef} className="flex h-full w-max will-change-transform">
         {/* Slide 1 */}
         <div className="flex h-full w-screen shrink-0 items-center justify-center">
-          <h1 className="text-[clamp(5rem,12vw,12rem)] font-semibold text-background2">
+          <h1 className="text-[clamp(3rem,12vw,12rem)] font-semibold text-background2">
             Works
           </h1>
         </div>

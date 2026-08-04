@@ -33,9 +33,9 @@ export default function HeroSection({
     <div>
       <header
         ref={headerRef}
-        className="fixed top-0 left-0 z-50 flex w-full items-center justify-between px-12 py-8 transition-colors duration-300"
+        className="fixed top-0 left-0 z-50 flex w-full items-center justify-between transition-colors duration-300 px-6 sm:px-8 md:px-12 py-4 sm:py-8"
       >
-        <a href="">
+        <a href="/">
           <h1 className="text-2xl uppercase">OD</h1>
         </a>
         <button>
@@ -45,7 +45,7 @@ export default function HeroSection({
       <div
         ref={heroRef}
         data-theme="light"
-        className="relative min-h-screen overflow-hidden bg-background2 px-12"
+        className="relative min-h-screen overflow-hidden bg-background2 px-6 sm:px-8 md:px-12"
       >
         <AxisCursor
           verticalColor="#000000"
@@ -56,15 +56,21 @@ export default function HeroSection({
           className="absolute inset-0 z-10"
         />
         <main>
-          <div className="absolute bottom-10 left-0 w-full px-12">
-            <h1 ref={builtRef} className="text-[100px] font-medium">
+          <div className="absolute bottom-10 left-0 w-full px-6 sm:px-8 md:px-12">
+            <h1
+              ref={builtRef}
+              className="text-[clamp(1.5rem,5vw,7.25rem)] font-medium"
+            >
               Built for people.
             </h1>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col-reverse md:flex-row md:items-center justify-between">
               <span ref={nameRef} className="uppercase">
                 Obede Dintala | Frontend Developer
               </span>
-              <h1 ref={poweredRef} className="text-[85px] font-medium">
+              <h1
+                ref={poweredRef}
+                className="text-[clamp(0.5rem,5vw,5.3125rem)] font-medium"
+              >
                 Powered by code.
               </h1>
             </div>
