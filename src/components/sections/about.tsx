@@ -12,7 +12,7 @@ export default function AboutSection({
     <section
       {...props}
       className={cn(
-        "bg-background1 flex min-h-screen flex-col items-center justify-center",
+        "bg-background1 flex h-screen flex-col items-center justify-center",
         props.className
       )}
 

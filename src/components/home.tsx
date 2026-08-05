@@ -3,7 +3,6 @@ import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import meImage from "../assets/images/me.png"
 
-
 import Splash from "./splash"
 import {
   AboutSection,
@@ -33,6 +32,8 @@ export default function HomePage() {
 
   const trackRef = React.useRef<HTMLDivElement>(null)
 
+  const aboutSkillsWrapperRef = React.useRef<HTMLDivElement>(null)
+
   useHomeAnimations({
     heroRef,
 
@@ -43,6 +44,8 @@ export default function HomePage() {
 
     workRef,
     trackRef,
+
+    aboutSkillsWrapperRef,
 
     ready: !isLoading,
   })
@@ -98,6 +101,7 @@ export default function HomePage() {
       <WorkSection workRef={workRef} trackRef={trackRef} data-theme="dark" />
 
       <div
+        ref={aboutSkillsWrapperRef}
         style={{
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${meImage.src})`,
           backgroundPosition: "center",
@@ -108,8 +112,8 @@ export default function HomePage() {
       >
         <AboutSection data-theme="dark" />
         <SkillsGravitySection />
+        <Footer />
       </div>
-      <Footer />
     </main>
   )
 }

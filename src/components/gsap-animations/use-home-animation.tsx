@@ -15,6 +15,8 @@ type HomeAnimationsProps = {
   workRef: React.RefObject<HTMLElement | null>
   trackRef: React.RefObject<HTMLDivElement | null>
 
+  aboutSkillsWrapperRef: React.RefObject<HTMLDivElement | null>
+
   ready: boolean
 }
 
@@ -29,6 +31,8 @@ export function useHomeAnimations({
   workRef,
   trackRef,
 
+  aboutSkillsWrapperRef,
+
   ready,
 }: HomeAnimationsProps) {
   useGSAP(
@@ -42,7 +46,8 @@ export function useHomeAnimations({
         !poweredRef.current ||
         !nameRef.current ||
         !workRef.current ||
-        !trackRef.current
+        !trackRef.current ||
+        !aboutSkillsWrapperRef.current
       ) {
         return
       }
@@ -50,6 +55,7 @@ export function useHomeAnimations({
       const hero = heroRef.current
       const work = workRef.current
       const track = trackRef.current
+      const aboutSkillsWrapper = aboutSkillsWrapperRef.current
 
       //--------------------------------------
       // Intro
@@ -135,6 +141,32 @@ export function useHomeAnimations({
           pin: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
+        },
+      })
+
+      //--------------------------------------
+      // About / Skills snap
+      //--------------------------------------
+      // O wrapper contém 2 secções (About, Skills), cada uma com h-screen.
+      // snapTo é fracionário: 1 / (nº de secções - 1) = 1 passo entre as duas.
+      // Sem "pin" — o scroll continua a ser o da página, isto só faz o
+      // scroll "encaixar" quando o utilizador solta dentro desta zona.
+
+      const aboutSkillsSections =
+        aboutSkillsWrapper.children.length > 0
+          ? aboutSkillsWrapper.children.length
+          : 1
+
+      ScrollTrigger.create({
+        trigger: aboutSkillsWrapper,
+        start: "top top",
+        end: "bottom bottom",
+        snap: {
+          snapTo: 1 / (aboutSkillsSections - 1 || 1),
+          duration: { min: 0.4, max: 1 },
+          delay: 0.15,
+          ease: "power2.inOut",
+          inertia: true,
         },
       })
 

@@ -6,6 +6,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog"
+import { Safari } from "./ui/safari"
 
 type Work = {
   id: number
@@ -58,22 +59,13 @@ export function WorkDialog({
       <DialogContent className="overflow-hidden rounded-none p-0 sm:max-w-6xl">
         <div className="flex flex-col sm:flex-row">
           {/* Carrossel */}
-          <div
-            className="relative aspect-video sm:aspect-auto sm:min-h-[470px] sm:w-1/2"
-            style={{ backgroundColor: "#000"}}
-          >
-            {slides.map((src, i) => (
-              <div
-                key={src}
-                className={`absolute inset-6 transition-opacity duration-500 flex items-center justify-center ${
-                  i === activeIndex ? "opacity-100" : "opacity-0"
-                }`}
-              >
-                <img src={src} alt={work.title} className="h-80 w-160" />
-              </div>
-            ))}
-
-           
+          <div className="w-7/12 p-8">
+            <Safari
+              url={work.link ?? "localhost:3000"}
+              imageSrc={work.images[activeIndex]}
+              className="h-full w-full"
+              mode="simple"
+            />
           </div>
           {/* Informações */}
           <div className="flex flex-1 flex-col gap-4 p-6 sm:w-1/2">
@@ -87,9 +79,7 @@ export function WorkDialog({
             </DialogHeader>
 
             {work.description && (
-              <p className="text-sm leading-relaxed">
-                {work.description}
-              </p>
+              <p className="text-sm leading-relaxed">{work.description}</p>
             )}
 
             {work.technologies && work.technologies.length > 0 && (
