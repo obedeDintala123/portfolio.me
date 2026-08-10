@@ -59,7 +59,7 @@ export default function HeroSection({
           className="absolute inset-0 z-10"
         />
         <main>
-          <div className="absolute bottom-12 left-0 w-full px-6 sm:px-8 md:px-12">
+          <div className="absolute bottom-18 md:bottom-10 left-0 w-full px-6 sm:px-8 md:px-12">
             <h1
               ref={builtRef}
               className="text-[clamp(1.5rem,5vw,7.25rem)] font-medium"
