@@ -142,13 +142,16 @@ export default function SkillsGravity(props: any) {
   } = props
 
   const [responsiveSize, setResponsiveSize] = useState(size)
+  const [isMobile, setIsMobile] = useState(false)
   const n = Math.max(1, Math.min(40, Math.round(count)))
   const containerRef = useRef<HTMLDivElement>(null)
   const rafRef = useRef(0)
 
   useEffect(() => {
     const updateSize = () => {
-      setResponsiveSize(window.innerWidth <= 640 ? 70 : size)
+      const mobile = window.innerWidth <= 640
+      setIsMobile(mobile)
+      setResponsiveSize(mobile ? 70 : size)
     }
 
     updateSize()
@@ -167,6 +170,7 @@ export default function SkillsGravity(props: any) {
     mouseEnable,
     mouseStiffness,
     mouseAngularStiffness,
+    isMobile,
   })
 
   useEffect(() => {
@@ -181,9 +185,13 @@ export default function SkillsGravity(props: any) {
     const bounding = container.getBoundingClientRect()
     makeWalls(bounding, engine.world, wallOptions)
 
+    // Drag só é ativado fora de mobile — em mobile o toque deve
+    // controlar o scroll da página, não arrastar as bolinhas.
+    const enableDrag = mouseEnable && !isMobile
+
     let mouseConstraint: any = null
     const onLeave = () => mouseConstraint?.mouse?.mouseup(new Event("mouseup"))
-    if (mouseEnable) {
+    if (enableDrag) {
       const mouse = M.Mouse.create(container)
       mouseConstraint = M.MouseConstraint.create(engine, {
         mouse,
@@ -198,8 +206,6 @@ export default function SkillsGravity(props: any) {
       container.addEventListener("mouseleave", onLeave)
     }
 
-    // Build the generated bodies, spread across the top so they fall in.
-    // Friction 1–10 → 0.1–1; a little air friction keeps motion settled.
     const bodyOpts = {
       friction: Math.max(1, Math.min(10, friction)) / 10,
       frictionAir: 0.02,
@@ -235,13 +241,12 @@ export default function SkillsGravity(props: any) {
 
     return () => {
       cancelAnimationFrame(rafRef.current)
-      if (mouseEnable) container.removeEventListener("mouseleave", onLeave)
+      if (enableDrag) container.removeEventListener("mouseleave", onLeave)
       M.World.clear(engine.world, false)
       M.Engine.clear(engine)
     }
   }, [depKey])
 
-  // Cycle the icons across the bodies (repeats if count > images.length).
   const imgFor = (i: number) => {
     const imgs =
       Array.isArray(images) && images.length > 0 ? images : SKILL_IMAGES
@@ -259,7 +264,6 @@ export default function SkillsGravity(props: any) {
       }}
       data-theme="dark"
     >
-      {/* Heading behind everything */}
       <h2
         className="text-background2"
         aria-hidden="true"
@@ -282,7 +286,6 @@ export default function SkillsGravity(props: any) {
         {heading}
       </h2>
 
-      {/* Physics container, on top of the heading */}
       <div
         ref={containerRef}
         style={{
@@ -294,11 +297,11 @@ export default function SkillsGravity(props: any) {
           overflow: "hidden",
           userSelect: "none",
           WebkitUserSelect: "none",
-          touchAction: "pan-y",
+          touchAction: isMobile ? "pan-y" : "none",
         }}
         draggable={false}
         onDragStart={(e) => e.preventDefault()}
-        onMouseDown={(e) => e.preventDefault()}
+        onMouseDown={isMobile ? undefined : (e) => e.preventDefault()}
       >
         {Array.from({ length: n }).map((_, i) => {
           const src = imgFor(i)
@@ -320,7 +323,7 @@ export default function SkillsGravity(props: any) {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                cursor: "grab",
+                cursor: isMobile ? "default" : "grab",
                 userSelect: "none",
                 WebkitUserSelect: "none",
                 willChange: "transform",
