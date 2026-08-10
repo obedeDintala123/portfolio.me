@@ -57,6 +57,9 @@ export function useHomeAnimations({
       const workTitle = workTitleRef.current
       const aboutSkillsWrapper = aboutSkillsWrapperRef.current
 
+      // DIAGNÓSTICO: nenhum pin em mobile — nem Hero, nem Work, nem snap.
+      const isMobileViewport = window.innerWidth <= 768
+
       //--------------------------------------
       // Intro
       //--------------------------------------
@@ -114,7 +117,7 @@ export function useHomeAnimations({
           end: `bottom center`,
           scrub: true,
           pinSpacing: false,
-          pin: true,
+          pin: !isMobileViewport, // DIAGNÓSTICO: sem pin em mobile
           anticipatePin: 1,
           invalidateOnRefresh: true,
         },
@@ -137,7 +140,7 @@ export function useHomeAnimations({
       })
 
       //--------------------------------------
-      // About / Skills snap
+      // About / Skills snap — só em desktop
       //--------------------------------------
 
       const aboutSkillsSections =
@@ -145,18 +148,20 @@ export function useHomeAnimations({
           ? aboutSkillsWrapper.children.length
           : 1
 
-      ScrollTrigger.create({
-        trigger: aboutSkillsWrapper,
-        start: "top top",
-        end: "bottom bottom",
-        snap: {
-          snapTo: 1 / (aboutSkillsSections - 1 || 1),
-          duration: { min: 0.4, max: 1 },
-          delay: 0.15,
-          ease: "power2.inOut",
-          inertia: true,
-        },
-      })
+      if (!isMobileViewport) {
+        ScrollTrigger.create({
+          trigger: aboutSkillsWrapper,
+          start: "top top",
+          end: "bottom bottom",
+          snap: {
+            snapTo: 1 / (aboutSkillsSections - 1 || 1),
+            duration: { min: 0.4, max: 1 },
+            delay: 0.15,
+            ease: "power2.inOut",
+            inertia: true,
+          },
+        })
+      }
 
       ScrollTrigger.refresh()
     },

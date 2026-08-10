@@ -174,6 +174,8 @@ export default function SkillsGravity(props: any) {
   })
 
   useEffect(() => {
+    if (isMobile) return
+
     const container = containerRef.current
     if (!container) return
 
@@ -185,13 +187,9 @@ export default function SkillsGravity(props: any) {
     const bounding = container.getBoundingClientRect()
     makeWalls(bounding, engine.world, wallOptions)
 
-    // Drag só é ativado fora de mobile — em mobile o toque deve
-    // controlar o scroll da página, não arrastar as bolinhas.
-    const enableDrag = mouseEnable && !isMobile
-
     let mouseConstraint: any = null
     const onLeave = () => mouseConstraint?.mouse?.mouseup(new Event("mouseup"))
-    if (enableDrag) {
+    if (mouseEnable) {
       const mouse = M.Mouse.create(container)
       mouseConstraint = M.MouseConstraint.create(engine, {
         mouse,
@@ -241,11 +239,31 @@ export default function SkillsGravity(props: any) {
 
     return () => {
       cancelAnimationFrame(rafRef.current)
-      if (enableDrag) container.removeEventListener("mouseleave", onLeave)
+      if (mouseEnable) container.removeEventListener("mouseleave", onLeave)
       M.World.clear(engine.world, false)
       M.Engine.clear(engine)
     }
   }, [depKey])
+
+  useEffect(() => {
+    if (!isMobile) return
+    const container = containerRef.current
+    if (!container) return
+
+    const els = Array.from(
+      container.querySelectorAll<HTMLElement>("[data-physics-body]")
+    )
+    const cols = Math.floor(container.clientWidth / (responsiveSize + 12)) || 1
+
+    els.forEach((el, i) => {
+      const col = i % cols
+      const row = Math.floor(i / cols)
+      const x = col * (responsiveSize + 12) + responsiveSize / 2 + 12
+      const y = row * (responsiveSize + 12) + responsiveSize / 2 + 12
+      el.style.visibility = "visible"
+      el.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`
+    })
+  }, [isMobile, responsiveSize, n])
 
   const imgFor = (i: number) => {
     const imgs =
@@ -259,8 +277,9 @@ export default function SkillsGravity(props: any) {
       style={{
         position: "relative",
         width: "100%",
-        height: style?.height ?? "100vh",
-        overflow: "hidden",
+        // DIAGNÓSTICO: sem altura fixa nem overflow hidden em mobile
+        height: isMobile ? "auto" : (style?.height ?? "100vh"),
+        overflow: isMobile ? "visible" : "hidden",
       }}
       data-theme="dark"
     >
@@ -268,7 +287,7 @@ export default function SkillsGravity(props: any) {
         className="text-background2"
         aria-hidden="true"
         style={{
-          position: "absolute",
+          position: isMobile ? "static" : "absolute",
           inset: 0,
           margin: 0,
           display: "flex",
@@ -281,6 +300,7 @@ export default function SkillsGravity(props: any) {
           zIndex: 0,
           pointerEvents: "none",
           userSelect: "none",
+          padding: isMobile ? "2rem 0" : 0,
         }}
       >
         {heading}
@@ -292,15 +312,17 @@ export default function SkillsGravity(props: any) {
           ...style,
           position: "relative",
           zIndex: 1,
-          height: "100%",
+          height: isMobile
+            ? `${Math.ceil(n / Math.max(1, Math.floor(360 / (responsiveSize + 12)))) * (responsiveSize + 12) + 24}px`
+            : "100%",
           width: "100%",
-          overflow: "hidden",
+          overflow: isMobile ? "visible" : "hidden",
           userSelect: "none",
           WebkitUserSelect: "none",
           touchAction: isMobile ? "pan-y" : "none",
         }}
         draggable={false}
-        onDragStart={(e) => e.preventDefault()}
+        onDragStart={isMobile ? undefined : (e) => e.preventDefault()}
         onMouseDown={isMobile ? undefined : (e) => e.preventDefault()}
       >
         {Array.from({ length: n }).map((_, i) => {
@@ -327,6 +349,7 @@ export default function SkillsGravity(props: any) {
                 userSelect: "none",
                 WebkitUserSelect: "none",
                 willChange: "transform",
+                pointerEvents: isMobile ? "none" : "auto", // ← NOVO
               }}
               draggable={false}
             >
