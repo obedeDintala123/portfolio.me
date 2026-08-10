@@ -13,7 +13,7 @@ type HomeAnimationsProps = {
   nameRef: React.RefObject<HTMLSpanElement | null>
 
   workRef: React.RefObject<HTMLElement | null>
-  trackRef: React.RefObject<HTMLDivElement | null>
+  workTitleRef: React.RefObject<HTMLHeadingElement | null>
 
   aboutSkillsWrapperRef: React.RefObject<HTMLDivElement | null>
 
@@ -29,7 +29,7 @@ export function useHomeAnimations({
   nameRef,
 
   workRef,
-  trackRef,
+  workTitleRef,
 
   aboutSkillsWrapperRef,
 
@@ -46,7 +46,7 @@ export function useHomeAnimations({
         !poweredRef.current ||
         !nameRef.current ||
         !workRef.current ||
-        !trackRef.current ||
+        !workTitleRef.current ||
         !aboutSkillsWrapperRef.current
       ) {
         return
@@ -54,7 +54,7 @@ export function useHomeAnimations({
 
       const hero = heroRef.current
       const work = workRef.current
-      const track = trackRef.current
+      const workTitle = workTitleRef.current
       const aboutSkillsWrapper = aboutSkillsWrapperRef.current
 
       //--------------------------------------
@@ -121,36 +121,24 @@ export function useHomeAnimations({
       })
 
       //--------------------------------------
-      // Horizontal
+      // Work title — fade + scale out, sem scroll horizontal
       //--------------------------------------
 
-      // 🔧 FIX: distance calculado dentro de funções, não uma vez só.
-      // Isto permite que invalidateOnRefresh recalcule os valores reais
-      // sempre que ScrollTrigger.refresh() correr (ex: depois das imagens
-      // do WorkSection carregarem e track.scrollWidth mudar).
-      const getDistance = () => track.scrollWidth - work.clientWidth
-
-      gsap.to(track, {
-        x: () => -getDistance(),
-        ease: "none",
+      gsap.to(workTitle, {
+        opacity: 0,
+        scale: 0.85,
+        ease: "power1.inOut",
         scrollTrigger: {
           trigger: work,
           start: "top top",
-          end: () => "+=" + getDistance(),
+          end: "+=60%",
           scrub: true,
-          pin: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
         },
       })
 
       //--------------------------------------
       // About / Skills snap
       //--------------------------------------
-      // O wrapper contém 2 secções (About, Skills), cada uma com h-screen.
-      // snapTo é fracionário: 1 / (nº de secções - 1) = 1 passo entre as duas.
-      // Sem "pin" — o scroll continua a ser o da página, isto só faz o
-      // scroll "encaixar" quando o utilizador solta dentro desta zona.
 
       const aboutSkillsSections =
         aboutSkillsWrapper.children.length > 0

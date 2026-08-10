@@ -11,7 +11,7 @@ const SOCIAL_LINKS = [
 
   {
     name: "LinkedIn",
-    url: "www.linkedin.com/in/obede-dintala",
+    url: "https://www.linkedin.com/in/obede-dintala",
     icon: (props: React.SVGProps<SVGSVGElement>) => (
       <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
         <path d="M6.94 5.5a2.44 2.44 0 1 1-4.88 0 2.44 2.44 0 0 1 4.88 0ZM2.4 8.9h4.28V21H2.4V8.9Zm7.13 0h4.1v1.66h.06c.57-1.08 1.97-2.22 4.05-2.22 4.33 0 5.13 2.85 5.13 6.56V21h-4.28v-5.34c0-1.27-.02-2.9-1.77-2.9-1.77 0-2.04 1.38-2.04 2.81V21H9.53V8.9Z" />

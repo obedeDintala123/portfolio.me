@@ -29,7 +29,7 @@ export default function HomePage() {
 
   const workRef = React.useRef<HTMLElement>(null)
 
-  const trackRef = React.useRef<HTMLDivElement>(null)
+  const workTitleRef = React.useRef<HTMLHeadingElement>(null)
 
   const aboutSkillsWrapperRef = React.useRef<HTMLDivElement>(null)
 
@@ -42,7 +42,7 @@ export default function HomePage() {
     nameRef,
 
     workRef,
-    trackRef,
+    workTitleRef,
 
     aboutSkillsWrapperRef,
 
@@ -97,7 +97,11 @@ export default function HomePage() {
         nameRef={nameRef}
       />
 
-      <WorkSection workRef={workRef} trackRef={trackRef} data-theme="dark" />
+      <WorkSection
+        workRef={workRef}
+        titleRef={workTitleRef}
+        data-theme="dark"
+      />
 
       <div
         ref={aboutSkillsWrapperRef}
