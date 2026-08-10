@@ -46,6 +46,7 @@ export default function Footer() {
 
   return (
     <footer
+    id="contact"
       data-theme="dark"
       className="flex min-h-screen items-end justify-center bg-[#060508] px-6 sm:px-8 md:px-12 py-4 sm:py-8 text-background2"
     >

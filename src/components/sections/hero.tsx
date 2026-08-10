@@ -1,6 +1,7 @@
 import React, { useEffect } from "react"
 import { Equal } from "lucide-react"
 import AxisCursor from "../axis-cursor"
+import MenuOverlay from "../menu"
 
 type HeroProps = {
   isLoading: boolean
@@ -19,6 +20,8 @@ export default function HeroSection({
   nameRef,
   poweredRef,
 }: HeroProps) {
+  const [menuOpen, setMenuOpen] = React.useState(false)
+
   useEffect(() => {
     if (isLoading) {
       const previousOverflow = document.body.style.overflow
@@ -30,15 +33,15 @@ export default function HeroSection({
   }, [isLoading])
 
   return (
-    <div>
+    <div id="home" className="relative">
       <header
         ref={headerRef}
-        className="fixed top-0 left-0 z-50 flex w-full items-center justify-between transition-colors duration-300 px-6 sm:px-8 md:px-12 py-4 sm:py-8"
+        className="fixed top-0 left-0 z-50 flex w-full items-center justify-between px-6 py-4 transition-colors duration-300 sm:px-8 sm:py-8 md:px-12"
       >
         <a href="/">
           <h1 className="text-2xl uppercase">OD</h1>
         </a>
-        <button>
+        <button onClick={() => setMenuOpen(true)}>
           <Equal className="size-8" />
         </button>
       </header>
@@ -63,7 +66,7 @@ export default function HeroSection({
             >
               Built for people.
             </h1>
-            <div className="flex flex-col-reverse md:flex-row md:items-center justify-between">
+            <div className="flex flex-col-reverse justify-between md:flex-row md:items-center">
               <span ref={nameRef} className="uppercase">
                 Obede Dintala | Frontend Developer
               </span>
@@ -77,6 +80,7 @@ export default function HeroSection({
           </div>
         </main>
       </div>
+      <MenuOverlay open={menuOpen} onOpenChange={setMenuOpen} />
     </div>
   )
 }

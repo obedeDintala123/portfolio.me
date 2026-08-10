@@ -96,6 +96,7 @@ export default function WorkSection({ workRef, titleRef, ...props }: Props) {
       ref={workRef}
       data-section="work"
       className="relative z-20 bg-primary shadow-2xl"
+      id="works"
     >
       <div className="flex h-screen items-center justify-center">
         <h1
@@ -107,7 +108,7 @@ export default function WorkSection({ workRef, titleRef, ...props }: Props) {
       </div>
 
       <div className="px-6 pb-16">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           {works.map((work, index) => (
             <WorkCard key={work.id} work={work} index={index} />
           ))}

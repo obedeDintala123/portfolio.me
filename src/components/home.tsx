@@ -104,6 +104,7 @@ export default function HomePage() {
       />
 
       <div
+        id="about"
         ref={aboutSkillsWrapperRef}
         style={{
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${meImage.src})`,
