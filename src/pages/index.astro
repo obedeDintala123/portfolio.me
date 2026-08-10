@@ -1,8 +1,11 @@
 ---
 import Layout from "@/layouts/main.astro"
 import HomePage from "@/components/home"
+
+export const prerender = true
 ---
 
 <Layout>
   <HomePage client:visible />
 </Layout>
+

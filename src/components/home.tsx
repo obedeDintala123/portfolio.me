@@ -2,7 +2,6 @@ import React from "react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import meImage from "../assets/images/me.png"
-
 import Splash from "./splash"
 import {
   AboutSection,
