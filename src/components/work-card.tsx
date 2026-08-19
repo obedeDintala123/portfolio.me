@@ -57,12 +57,14 @@ export default function WorkCard({ work }: Props) {
               loop
               muted
               playsInline
+              preload="auto"
               className="w-full rounded-md object-cover transition-transform duration-500 group-hover:scale-105"
             />
           ) : (
             <img
               src={work.image}
               alt={work.title}
+              loading="lazy"
               className="rounded-md transition-transform duration-500 group-hover:scale-105"
             />
           )}

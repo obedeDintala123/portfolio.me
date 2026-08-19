@@ -6,24 +6,18 @@
 @custom-variant dark (&:is(.dark *));
 
 @font-face {
-  font-family: "Montserrat-Regular";
-  src: url("../fonts/Montserrat-Regular.ttf");
-}
-
-@font-face {
   font-family: "Sprintura";
-  src: url("../fonts/Sprintura.otf");
+  src: url("/fonts/Sprintura.otf");
 }
 
 @font-face {
   font-family: "Satoshi-Regular";
-  src: url("../fonts/Satoshi-Regular.otf");
+  src: url("/fonts/Satoshi-Regular.otf");
 }
 
 @theme inline {
   --font-heading: var(--font-sans);
   --font-sans: "Inter Variable", sans-serif;
-  --font-mont: "Montserrat-Regular";
   --font-sprintura: "Sprintura";
   --font-satoshi: "Satoshi-Regular";
   --color-background2: var(--background2);
