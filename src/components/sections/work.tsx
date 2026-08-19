@@ -1,8 +1,5 @@
 import type { ComponentPropsWithRef } from "react"
 import WorkCard from "../work-card"
-import project1 from "../../assets/thumbnail/project1.png"
-import project1_2 from "../../assets/images/project1-2.png"
-import project1_3 from "../../assets/images/project1-3.png"
 import { Button } from "../ui/button"
 import { ArrowUpRight } from "lucide-react"
 
@@ -13,7 +10,7 @@ type Work = {
   video?: string
   category: string
   year: string
-  images: string[]
+  image?: string
   description?: string
   technologies?: string[]
   link?: string
@@ -23,64 +20,39 @@ const works: Work[] = [
   {
     id: 1,
     title: "Clothing",
-    category: "Landing Page",
+    category: "e-commerce",
     type: "video",
-    video: "/videos/video1.webm",
     year: "2026",
-    images: [`${project1.src}`, `${project1_2.src}`, `${project1_3.src}`],
-    description:
-      "Clothing e-commerce site built around an immersive shopping experience. Features interactive 3D product views (Three.js), pinned scroll-driven sections (GSAP), a product carousel with pricing and details, and a 'try it on' virtual preview before purchase. Built with Next.js and Tailwind, with cart and authentication support.",
-    technologies: [
-      "Next.js",
-      "React",
-      "TypeScript",
-      "Tailwind CSS",
-      "GSAP",
-      "Three.js",
-      "shadcn/ui",
-    ],
+    video: "/videos/project1.webm",
     link: "https://clothing-alpha-five.vercel.app",
   },
-
   {
     id: 2,
-    title: "Clothing",
+    title: "Blog",
+    category: "blog",
     type: "video",
-    category: "Landing Page",
     year: "2026",
-    images: [`${project1.src}`, `${project1_2.src}`, `${project1_3.src}`],
-    description:
-      "Clothing e-commerce site built around an immersive shopping experience. Features interactive 3D product views (Three.js), pinned scroll-driven sections (GSAP), a product carousel with pricing and details, and a 'try it on' virtual preview before purchase. Built with Next.js and Tailwind, with cart and authentication support.",
-    technologies: [
-      "Next.js",
-      "React",
-      "TypeScript",
-      "Tailwind CSS",
-      "GSAP",
-      "Three.js",
-      "shadcn/ui",
-    ],
-    link: "https://clothing-alpha-five.vercel.app",
+    video: "/videos/project2.webm",
+    link: "https://blog-obede.vercel.app",
+  },
+    {
+    id: 3,
+    title: "Produtech",
+    category: "Management",
+    type: "video",
+    year: "2026",
+    video: "/videos/project3.webm",
+    link: "https://produ-tech-6v2s.vercel.app",
   },
 
-  {
-    id: 3,
-    title: "Clothing",
-    category: "Landing Page",
+      {
+    id: 4,
+    title: "Yummy - Restaurant",
+    category: "Management",
+    type: "video",
     year: "2026",
-    images: [`${project1.src}`, `${project1_2.src}`, `${project1_3.src}`],
-    description:
-      "Clothing e-commerce site built around an immersive shopping experience. Features interactive 3D product views (Three.js), pinned scroll-driven sections (GSAP), a product carousel with pricing and details, and a 'try it on' virtual preview before purchase. Built with Next.js and Tailwind, with cart and authentication support.",
-    technologies: [
-      "Next.js",
-      "React",
-      "TypeScript",
-      "Tailwind CSS",
-      "GSAP",
-      "Three.js",
-      "shadcn/ui",
-    ],
-    link: "https://clothing-alpha-five.vercel.app",
+    video: "/videos/project4.webm",
+    link: "https://yummy-restaurant-five.vercel.app",
   },
 ]
 
@@ -107,8 +79,8 @@ export default function WorkSection({ workRef, titleRef, ...props }: Props) {
         </h1>
       </div>
 
-      <div className="px-6 pb-16">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <div className="place-content-center place-items-center px-6 pb-16">
+        <div className="grid max-w-400 grid-cols-1 gap-8 md:grid-cols-2">
           {works.map((work, index) => (
             <WorkCard key={work.id} work={work} index={index} />
           ))}
