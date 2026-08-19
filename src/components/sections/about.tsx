@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils"
 
 const DEFAULT_PARAGRAPHS = [
-  "I'm a Frontend Developer from Angola passionate about creating modern, responsive and user-friendly web applications.",
+  "I'm a Web Developer from Angola passionate about creating modern, responsive and user-friendly web applications.",
   "I enjoy turning ideas into polished digital products while continuously improving my knowledge of software architecture and backend development.",
 ]
 
