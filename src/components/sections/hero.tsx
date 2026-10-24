@@ -68,7 +68,7 @@ export default function HeroSection({
             </h1>
             <div className="flex flex-col-reverse justify-between md:flex-row md:items-center">
               <span ref={nameRef} className="uppercase">
-                Obede Dintala | Web Developer
+                Obede Dintala | Junior Software Engineer
               </span>
               <h1
                 ref={poweredRef}

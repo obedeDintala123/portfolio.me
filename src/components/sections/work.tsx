@@ -24,7 +24,7 @@ const works: Work[] = [
     type: "video",
     year: "2026",
     video: "/videos/project1.webm",
-    link: "https://clothing-alpha-five.vercel.app",
+    link: "https://clothing-project-web.vercel.app",
   },
   {
     id: 2,

@@ -1,36 +1,39 @@
-# Astro + React + TypeScript + shadcn/ui
+# Obede Dintala | Portfolio
 
-This is a template for a new Astro project with React, TypeScript, and shadcn/ui.
+> Personal portfolio showcasing web development projects, skills, and contact information.
 
-## Adding components
+The portfolio includes an introduction, an About section, an interactive skills display, selected projects, and social links. The featured work includes e-commerce, blog, and management projects.
 
-To add components to your app, run the following command:
+## Tech stack
+
+- Astro
+- React and TypeScript
+- Tailwind CSS
+- GSAP for animations
+- Matter.js for the interactive skills section
+
+## Requirements
+
+- Node.js 22.12.0 or newer
+- npm
+
+## Getting started
+
+Install dependencies and start the development server:
 
 ```bash
-npx shadcn@latest add button
+npm install
+npm run dev
 ```
 
-This will place the ui components in the `src/components` directory.
+Astro prints the local development URL in the terminal.
 
-## Using components
+## Available commands
 
-To use the components in your app, import them in an `.astro` file:
-
-```astro
----
-import { Button } from "@/components/ui/button"
----
-
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>Astro App</title>
-  </head>
-  <body>
-    <div class="grid h-screen place-items-center content-center">
-      <Button>Button</Button>
-    </div>
-  </body>
-</html>
-```
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the development server |
+| `npm run build` | Build the production site |
+| `npm run preview` | Preview the production build locally |
+| `npm run typecheck` | Check Astro and TypeScript diagnostics |
+| `npm run lint` | Run ESLint |
